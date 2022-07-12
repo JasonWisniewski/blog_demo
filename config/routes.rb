@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'search', to: "search#index"
   get 'users/profile'
   #this could be an issue not in video
   devise_for :users, controllers: {
