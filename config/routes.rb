@@ -1,6 +1,14 @@
 Rails.application.routes.draw do
-  get 'search', to: "search#index"
-  get 'users/profile'
+  authenticated :user, ->(user) { user.admin?} do
+    get 'admin', to: 'admin#index'
+    get 'admin/posts'
+    get 'admin/comments'
+    get 'admin/users'
+    get 'admin/show_post', to: "admin#show_post", as: 'admin_post'
+    get 'search', to: "search#index"
+    get 'users/profile'
+  end
+
   #this could be an issue not in video
   devise_for :users, controllers: {
     sessions: 'users/sessions',
