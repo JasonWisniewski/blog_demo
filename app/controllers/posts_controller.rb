@@ -10,7 +10,7 @@
   # GET /posts/1 or /posts/1.json
   def show
     @post.update(views: @post.views + 1)
-    @comments = @post.comments.order(created_at: :desc)
+    @comments = @post.comments.includes(:user, :rich_text_body).order(created_at: :desc)
 
     mark_notifications_as_read
   end
@@ -67,6 +67,13 @@
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])
+
+      #if an old id or numeric was used to find the record, then
+      # the request slug will not match the current slug, and we show
+      # a 301 redirect to to the new path
+      if params[:id] != @post.slug
+        redirect_to @post, :status => :moved_permanently
+      end
     end
 
     # Only allow a list of trusted parameters through.
